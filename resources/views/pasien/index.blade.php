@@ -21,6 +21,20 @@
 
     <div class="bg-white rounded shadow overflow-hidden">
 
+    <form method="GET" action="/pasien" class="mb-4 flex gap-2">
+        <input
+            type="text"
+            name="search"
+            value="{{ $search ?? '' }}"
+            placeholder="Cari NRM, nama, telepon, nomor WA, alamat..."
+            class="border px-4 py-2 rounded w-full"
+        >
+
+        <button class="bg-blue-600 text-white px-4 py-2 rounded">
+            Cari
+        </button>
+    </form>
+
         <table class="w-full">
 
             <thead class="bg-gray-200">

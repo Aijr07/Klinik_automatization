@@ -35,6 +35,16 @@
                 Data Antrian
             </a>
 
+            <a href="/jadwal-dokter"
+                class="block px-4 py-2 rounded hover:bg-blue-800">
+                Jadwal Dokter
+            </a>
+
+            <a href="/pengaturan-klinik"
+                class="block px-4 py-2 rounded hover:bg-blue-800">
+                Pengaturan Klinik
+            </a>
+
         </nav>
 
     </aside>
@@ -91,6 +101,19 @@
                 </h3>
             </div>
 
+            <div class="bg-white p-6 rounded shadow">
+                <p class="text-gray-500">Pasien Baru Hari Ini</p>
+                <h3 class="text-3xl font-bold text-indigo-600">
+                    {{ $pasienBaruHariIni }}
+                </h3>
+            </div>
+
+            <div class="bg-white p-6 rounded shadow">
+                <p class="text-gray-500">Pasien Lama Hari Ini</p>
+                <h3 class="text-3xl font-bold text-purple-600">
+                    {{ $pasienLamaHariIni }}
+                </h3>
+            </div>
         </div>
 
         <div class="bg-white mt-8 p-6 rounded shadow">

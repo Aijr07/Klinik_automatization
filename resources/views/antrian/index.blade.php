@@ -55,6 +55,12 @@
         </button>
     </form>
 
+    <div class="mb-4 flex gap-2">
+        <a href="/antrian" class="px-4 py-2 rounded bg-gray-600 text-white">Semua Jenis</a>
+        <a href="/antrian?jenis=baru" class="px-4 py-2 rounded bg-indigo-600 text-white">Pasien Baru</a>
+        <a href="/antrian?jenis=lama" class="px-4 py-2 rounded bg-purple-600 text-white">Pasien Lama</a>
+    </div>
+
         <table class="w-full">
 
             <thead class="bg-gray-200">
@@ -64,6 +70,7 @@
                     <th class="p-3 text-left">Nomor Antrian</th>
                     <th class="p-3 text-left">NRM</th>
                     <th class="p-3 text-left">Nama Pasien</th>
+                    <th class="p-3 text-left">Jenis Pasien</th>
                     <th class="p-3 text-left">Keluhan</th>
                     <th class="p-3 text-left">Status</th>
                     <th class="p-3 text-center">Aksi</th>
@@ -94,6 +101,20 @@
                             <a href="/pasien/{{ $item->pasien->id }}" class="text-blue-600 hover:underline">
                                 {{ $item->pasien->nama }}
                             </a>
+                        @else
+                            -
+                        @endif
+                    </td>
+                    
+                    <td class="p-3">
+                        @if($item->jenis_pasien == 'baru')
+                            <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
+                                Pasien Baru
+                            </span>
+                        @elseif($item->jenis_pasien == 'lama')
+                            <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                                Pasien Lama
+                            </span>
                         @else
                             -
                         @endif

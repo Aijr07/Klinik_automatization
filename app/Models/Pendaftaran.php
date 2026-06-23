@@ -8,6 +8,8 @@ class Pendaftaran extends Model
 {
     protected $table = 'pendaftaran';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'pasien_id',
         'nomor_antrian',

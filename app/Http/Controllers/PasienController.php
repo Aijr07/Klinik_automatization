@@ -8,10 +8,21 @@ class PasienController extends Controller
 {
     public function index()
     {
-        $pasien = Pasien::orderBy('id', 'desc')->get();
+        $search = request('search');
 
-        return view('pasien.index', compact('pasien'));
+        $pasien = Pasien::when($search, function ($query) use ($search) {
+                return $query->where('nrm', 'like', '%' . $search . '%')
+                    ->orWhere('nama', 'like', '%' . $search . '%')
+                    ->orWhere('telepon', 'like', '%' . $search . '%')
+                    ->orWhere('nomor_wa', 'like', '%' . $search . '%')
+                    ->orWhere('alamat', 'like', '%' . $search . '%');
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('pasien.index', compact('pasien', 'search'));
     }
+    
     public function show($id)
     {
         $pasien = Pasien::with(['pendaftaran' => function ($query) {

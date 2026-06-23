@@ -29,6 +29,14 @@ class DashboardController extends Controller
         $batal = Pendaftaran::where('status', 'batal')
             ->whereDate('tanggal', now()->toDateString())
             ->count();
+        
+        $pasienBaruHariIni = Pendaftaran::whereDate('tanggal', now()->toDateString())
+            ->where('jenis_pasien', 'baru')
+            ->count();
+
+        $pasienLamaHariIni = Pendaftaran::whereDate('tanggal', now()->toDateString())
+            ->where('jenis_pasien', 'lama')
+            ->count();
 
         $antrianTerbaru = Pendaftaran::with('pasien')
             ->whereDate('tanggal', now()->toDateString())
@@ -54,7 +62,9 @@ class DashboardController extends Controller
             'batal',
             'antrianTerbaru',
             'labelTanggal',
-            'dataKunjungan'
+            'dataKunjungan',
+            'pasienBaruHariIni',
+            'pasienLamaHariIni',
         ));
     }
 }

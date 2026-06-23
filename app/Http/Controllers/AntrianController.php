@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pendaftaran;
+use Illuminate\Support\Facades\Http;
 
 class AntrianController extends Controller
 {
@@ -10,6 +11,7 @@ class AntrianController extends Controller
     {
         $status = request('status');
         $search = request('search');
+        $jenis = request('jenis');
 
         $antrian = Pendaftaran::with('pasien')
             ->when($status, function ($query) use ($status) {
@@ -25,21 +27,38 @@ class AntrianController extends Controller
                     });
                 });
             })
+            ->when($jenis, function ($query) use ($jenis) {
+                return $query->where('jenis_pasien', $jenis);
+            })
+
             ->orderBy('tanggal', 'desc')
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('antrian.index', compact('antrian', 'status', 'search'));
+        return view('antrian.index', compact('antrian', 'status', 'search', 'jenis'));
     }
 
     public function updateStatus($id)
     {
-        $pendaftaran = Pendaftaran::findOrFail($id);
+        $pendaftaran = Pendaftaran::with('pasien')->findOrFail($id);
+
+        $status = request('status');
 
         $pendaftaran->update([
-            'status' => request('status')
+            'status' => $status
         ]);
 
-        return redirect('/antrian')->with('success', 'Status antrian berhasil diperbarui.');
+        if ($status == 'dipanggil') {
+            $response = Http::post(env('N8N_WEBHOOK_PANGGIL'), [
+                'nomor_wa' => $pendaftaran->pasien->nomor_wa,
+                'nama' => $pendaftaran->pasien->nama,
+                'nomor_antrian' => $pendaftaran->nomor_antrian,
+            ]);
+
+            dd($response->status(), $response->body());
+        }
+
+        return redirect('/antrian')
+            ->with('success', 'Status antrian berhasil diperbarui.');
     }
 }
