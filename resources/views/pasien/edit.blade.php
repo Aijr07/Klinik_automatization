@@ -1,42 +1,118 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Pasien</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+@extends('layouts.app')
 
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6">Edit Data Pasien</h1>
+@section('title', 'Edit Pasien')
 
-    <form action="/pasien/{{ $pasien->id }}/update" method="POST" class="bg-white p-6 rounded shadow">
-        @csrf
+@section('content')
 
-        <label>Nama</label>
-        <input type="text" name="nama" value="{{ $pasien->nama }}" class="w-full border p-2 mb-4 rounded">
+<div class="mb-8 bg-white rounded-3xl p-6 shadow-sm border border-sky-100">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800">
+                Edit Data Pasien
+            </h1>
+            <p class="text-slate-500 mt-1">
+                Perbarui informasi pasien yang terdaftar di klinik.
+            </p>
+        </div>
 
-        <label>Umur</label>
-        <input type="number" name="umur" value="{{ $pasien->umur }}" class="w-full border p-2 mb-4 rounded">
-
-        <label>Alamat</label>
-        <textarea name="alamat" class="w-full border p-2 mb-4 rounded">{{ $pasien->alamat }}</textarea>
-
-        <label>Telepon</label>
-        <input type="text" name="telepon" value="{{ $pasien->telepon }}" class="w-full border p-2 mb-4 rounded">
-
-        <label>Nomor WA</label>
-        <input type="text" name="nomor_wa" value="{{ $pasien->nomor_wa }}" class="w-full border p-2 mb-4 rounded">
-
-        <button class="bg-blue-600 text-white px-4 py-2 rounded">
-            Simpan
-        </button>
-
-        <a href="/pasien/{{ $pasien->id }}" class="ml-2 bg-gray-500 text-white px-4 py-2 rounded">
-            Batal
+        <a href="/pasien/{{ $pasien->id }}"
+           class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-3 rounded-2xl transition">
+            ← Kembali
         </a>
-    </form>
+    </div>
 </div>
 
-</body>
-</html>
+<div class="bg-white rounded-3xl shadow-sm border border-sky-100 p-8">
+
+    <form action="/pasien/{{ $pasien->id }}/update" method="POST">
+        @csrf
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Nama Pasien
+                </label>
+
+                <input
+                    type="text"
+                    name="nama"
+                    value="{{ $pasien->nama }}"
+                    class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                    required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Umur
+                </label>
+
+                <input
+                    type="number"
+                    name="umur"
+                    value="{{ $pasien->umur }}"
+                    class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                    required>
+            </div>
+
+        </div>
+
+        <div class="mt-6">
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                Alamat
+            </label>
+
+            <textarea
+                name="alamat"
+                rows="4"
+                class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition">{{ $pasien->alamat }}</textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Nomor Telepon
+                </label>
+
+                <input
+                    type="text"
+                    name="telepon"
+                    value="{{ $pasien->telepon }}"
+                    class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Nomor WhatsApp
+                </label>
+
+                <input
+                    type="text"
+                    name="nomor_wa"
+                    value="{{ $pasien->nomor_wa }}"
+                    class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition">
+            </div>
+
+        </div>
+
+        <div class="flex gap-4 mt-8">
+
+            <button
+                type="submit"
+                class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white px-8 py-3 rounded-2xl shadow transition">
+                Simpan Perubahan
+            </button>
+
+            <a href="/pasien/{{ $pasien->id }}"
+               class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-8 py-3 rounded-2xl transition">
+                Batal
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+@endsection

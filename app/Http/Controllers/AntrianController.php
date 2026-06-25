@@ -49,16 +49,35 @@ class AntrianController extends Controller
         ]);
 
         if ($status == 'dipanggil') {
-            $response = Http::post(env('N8N_WEBHOOK_PANGGIL'), [
+            Http::post(env('N8N_WEBHOOK_PANGGIL'), [
                 'nomor_wa' => $pendaftaran->pasien->nomor_wa,
                 'nama' => $pendaftaran->pasien->nama,
                 'nomor_antrian' => $pendaftaran->nomor_antrian,
             ]);
-
-            dd($response->status(), $response->body());
         }
 
         return redirect('/antrian')
             ->with('success', 'Status antrian berhasil diperbarui.');
+    }
+    
+    public function formRujuk($id)
+    {
+        $antrian = Pendaftaran::with('pasien')->findOrFail($id);
+
+        return view('antrian.rujuk', compact('antrian'));
+    }
+
+    public function simpanRujuk($id)
+    {
+        $antrian = Pendaftaran::findOrFail($id);
+
+        $antrian->update([
+            'status' => 'dirujuk',
+            'tujuan_rujukan' => request('tujuan_rujukan'),
+            'alasan_rujukan' => request('alasan_rujukan'),
+        ]);
+
+        return redirect('/antrian')
+            ->with('success', 'Pasien berhasil dirujuk.');
     }
 }

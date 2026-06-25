@@ -1,42 +1,84 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Jadwal Dokter</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+@extends('layouts.app')
 
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6">Edit Jadwal Dokter</h1>
+@section('title', 'Edit Jadwal Dokter')
 
-    <form action="/jadwal-dokter/{{ $jadwal->id }}/update" method="POST" class="bg-white p-6 rounded shadow">
+@section('content')
+
+<div class="mb-8 bg-white rounded-3xl p-6 shadow-sm border border-sky-100">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800">Edit Jadwal Dokter</h1>
+            <p class="text-slate-500 mt-1">Perbarui data jadwal praktik dokter.</p>
+        </div>
+
+        <a href="/jadwal-dokter"
+           class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-3 rounded-2xl transition">
+            ← Kembali
+        </a>
+    </div>
+</div>
+
+<div class="bg-white rounded-3xl shadow-sm border border-sky-100 p-8">
+    <form action="/jadwal-dokter/{{ $jadwal->id }}/update" method="POST">
         @csrf
 
-        <label>Nama Dokter</label>
-        <input type="text" name="nama_dokter" value="{{ $jadwal->nama_dokter }}" class="w-full border p-2 mb-4 rounded" required>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Nama Dokter
+                </label>
+                <input type="text" name="nama_dokter" value="{{ $jadwal->nama_dokter }}"
+                       class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                       required>
+            </div>
 
-        <label>Hari</label>
-        <input type="text" name="hari" value="{{ $jadwal->hari }}" class="w-full border p-2 mb-4 rounded" required>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Hari
+                </label>
+                <input type="text" name="hari" value="{{ $jadwal->hari }}"
+                       class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                       required>
+            </div>
 
-        <label>Jam Mulai</label>
-        <input type="time" name="jam_mulai" value="{{ $jadwal->jam_mulai }}" class="w-full border p-2 mb-4 rounded" required>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Jam Mulai
+                </label>
+                <input type="time" name="jam_mulai" value="{{ $jadwal->jam_mulai }}"
+                       class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                       required>
+            </div>
 
-        <label>Jam Selesai</label>
-        <input type="time" name="jam_selesai" value="{{ $jadwal->jam_selesai }}" class="w-full border p-2 mb-4 rounded" required>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Jam Selesai
+                </label>
+                <input type="time" name="jam_selesai" value="{{ $jadwal->jam_selesai }}"
+                       class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                       required>
+            </div>
+        </div>
 
-        <label>Keterangan</label>
-        <textarea name="keterangan" class="w-full border p-2 mb-4 rounded">{{ $jadwal->keterangan }}</textarea>
+        <div class="mt-6">
+            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                Keterangan
+            </label>
+            <textarea name="keterangan" rows="4"
+                      class="w-full border border-sky-100 bg-sky-50 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition">{{ $jadwal->keterangan }}</textarea>
+        </div>
 
-        <button class="bg-blue-600 text-white px-4 py-2 rounded">
-            Update
-        </button>
+        <div class="flex gap-4 mt-8">
+            <button class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white px-8 py-3 rounded-2xl shadow transition">
+                Update
+            </button>
 
-        <a href="/jadwal-dokter" class="ml-2 bg-gray-500 text-white px-4 py-2 rounded">
-            Batal
-        </a>
+            <a href="/jadwal-dokter"
+               class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-8 py-3 rounded-2xl transition">
+                Batal
+            </a>
+        </div>
     </form>
 </div>
 
-</body>
-</html>
+@endsection

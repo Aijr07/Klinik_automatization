@@ -21,4 +21,6 @@ class Pasien extends Model
     {
         return $this->hasMany(Pendaftaran::class, 'pasien_id');
     }
+
+    
 }

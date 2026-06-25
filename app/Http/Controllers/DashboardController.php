@@ -53,6 +53,13 @@ class DashboardController extends Controller
         $labelTanggal = $kunjunganPerHari->pluck('tanggal');
         $dataKunjungan = $kunjunganPerHari->pluck('total');
 
+        $pasienTerbanyak = \App\Models\Pasien::withCount('pendaftaran')
+            ->orderBy('pendaftaran_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        $totalDirujuk = \App\Models\Pendaftaran::where('status', 'dirujuk')->count();
+
         return view('dashboard', compact(
             'totalPasien',
             'antrianHariIni',
@@ -65,6 +72,8 @@ class DashboardController extends Controller
             'dataKunjungan',
             'pasienBaruHariIni',
             'pasienLamaHariIni',
+            'pasienTerbanyak',
+            'totalDirujuk',
         ));
     }
 }

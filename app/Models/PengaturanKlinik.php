@@ -14,5 +14,7 @@ class PengaturanKlinik extends Model
         'telepon',
         'kuota_harian',
         'jam_operasional',
+        'status_pendaftaran',
+        'alasan_tutup',
     ];
 }

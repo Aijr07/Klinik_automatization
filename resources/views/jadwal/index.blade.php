@@ -1,119 +1,94 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Dokter</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+@extends('layouts.app')
 
-<div class="container mx-auto p-6">
+@section('title', 'Jadwal Dokter')
 
-    <div class="flex justify-between items-center mb-6">
+@section('content')
 
-        <h1 class="text-3xl font-bold">
-            Jadwal Dokter
-        </h1>
-
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <a href="/"
-           class="bg-blue-600 text-white px-4 py-2 rounded">
-            Dashboard
-        </a>
+<div class="mb-8 bg-white rounded-3xl p-6 shadow-sm border border-sky-100">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800">Jadwal Dokter</h1>
+            <p class="text-slate-500 mt-1">Kelola jadwal praktik dokter klinik.</p>
+        </div>
 
         <a href="/jadwal-dokter/create"
-            class="bg-green-600 text-white px-4 py-2 rounded">
-            Tambah Jadwal
+           class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white px-5 py-3 rounded-2xl shadow transition">
+            + Tambah Jadwal
         </a>
-
     </div>
+</div>
 
-    <div class="bg-white rounded shadow overflow-hidden">
+@if(session('success'))
+    <div class="bg-green-50 border border-green-200 text-green-700 px-5 py-4 rounded-2xl mb-6 shadow-sm">
+        {{ session('success') }}
+    </div>
+@endif
 
-        <table class="w-full">
+<div class="bg-white rounded-3xl shadow-sm border border-sky-100 overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-sky-100 text-slate-700">
+            <tr>
+                <th class="p-4 text-left">Nama Dokter</th>
+                <th class="p-4 text-left">Hari</th>
+                <th class="p-4 text-left">Jam Mulai</th>
+                <th class="p-4 text-left">Jam Selesai</th>
+                <th class="p-4 text-left">Keterangan</th>
+                <th class="p-4 text-center">Aksi</th>
+            </tr>
+        </thead>
 
-            <thead class="bg-gray-200">
-                <tr>
-                    <th class="p-3 text-left">Nama Dokter</th>
-                    <th class="p-3 text-left">Hari</th>
-                    <th class="p-3 text-left">Jam Mulai</th>
-                    <th class="p-3 text-left">Jam Selesai</th>
-                    <th class="p-3 text-left">Keterangan</th>
-                    <th class="p-3 text-left">Aksi</th>
-                </tr>
-            </thead>
+        <tbody>
+        @forelse($jadwal as $item)
+            <tr class="border-b border-sky-50 hover:bg-sky-50 transition">
+                <td class="p-4 font-semibold text-blue-600">
+                    {{ $item->nama_dokter }}
+                </td>
 
-            <tbody>
+                <td class="p-4 text-slate-700">
+                    {{ $item->hari }}
+                </td>
 
-            @forelse($jadwal as $item)
+                <td class="p-4 text-slate-700">
+                    {{ $item->jam_mulai }}
+                </td>
 
-                <tr class="border-b">
+                <td class="p-4 text-slate-700">
+                    {{ $item->jam_selesai }}
+                </td>
 
-                    <td class="p-3">
-                        {{ $item->nama_dokter }}
-                    </td>
+                <td class="p-4 text-slate-700">
+                    {{ $item->keterangan }}
+                </td>
 
-                    <td class="p-3">
-                        {{ $item->hari }}
-                    </td>
-
-                    <td class="p-3">
-                        {{ $item->jam_mulai }}
-                    </td>
-
-                    <td class="p-3">
-                        {{ $item->jam_selesai }}
-                    </td>
-
-                    <td class="p-3">
-                        {{ $item->keterangan }}
-                    </td>
-                    <td class="p-3 flex gap-2">
+                <td class="p-4">
+                    <div class="flex justify-center gap-2">
                         <a href="/jadwal-dokter/{{ $item->id }}/edit"
-                        class="bg-yellow-500 text-white px-3 py-1 rounded">
+                           class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-4 py-2 rounded-xl font-semibold transition">
                             Edit
                         </a>
 
-                        <form action="/jadwal-dokter/{{ $item->id }}/delete"
-                            method="POST">
+                        <form action="/jadwal-dokter/{{ $item->id }}/delete" method="POST">
                             @csrf
 
                             <button
                                 type="submit"
                                 onclick="return confirm('Yakin ingin menghapus jadwal dokter ini?')"
-                                class="bg-red-600 text-white px-3 py-1 rounded">
+                                class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-xl font-semibold transition">
                                 Hapus
                             </button>
                         </form>
-
-                    </td>
-
-                </tr>
-
-            @empty
-
-                <tr>
-                    <td colspan="5"
-                        class="text-center p-5 text-gray-500">
-                        Belum ada jadwal dokter
-                    </td>
-                </tr>
-
-            @endforelse
-
-            </tbody>
-
-        </table>
-
-    </div>
-
+                    </div>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="6" class="text-center p-8 text-slate-500">
+                    Belum ada jadwal dokter
+                </td>
+            </tr>
+        @endforelse
+        </tbody>
+    </table>
 </div>
 
-</body>
-</html>
+@endsection

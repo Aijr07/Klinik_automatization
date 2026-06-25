@@ -17,6 +17,8 @@ class Pendaftaran extends Model
         'tanggal',
         'status',
         'jenis_pasien',
+        'tujuan_rujukan',
+        'alasan_rujukan',
     ];
 
     public function pasien()
