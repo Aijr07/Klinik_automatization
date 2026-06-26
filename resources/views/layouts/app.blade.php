@@ -13,70 +13,102 @@
 
 <div class="flex min-h-screen">
 
-    <aside class="fixed left-0 top-0 h-screen w-72 bg-gradient-to-b from-sky-500 to-blue-700 text-white p-6 shadow-2xl overflow-y-auto">
+    <aside class="fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-sky-500 via-sky-600 to-blue-700 text-white shadow-2xl flex flex-col">
 
-        <div class="mb-10">
-            <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl mb-4">
-                🏥
+            {{-- Header --}}
+            <div class="px-6 pt-8 pb-6 border-b border-white/15">
+
+                <div class="flex items-center gap-4">
+
+                    <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-3xl backdrop-blur">
+                        🏥
+                    </div>
+
+                    <div>
+                        <h1 class="text-xl font-bold leading-tight">
+                            Klinik Azisah
+                        </h1>
+
+                        <p class="text-sky-100 text-sm">
+                            Sistem Antrian Pasien
+                        </p>
+                    </div>
+
+                </div>
+
             </div>
 
-            <h1 class="text-2xl font-bold">Dashboard Klinik Azisah</h1>
-            <p class="text-sky-100 text-sm mt-1">Sistem Antrian Pasien</p>
-        </div>
+            {{-- Menu --}}
+            <nav class="flex-1 px-4 py-6 space-y-2">
 
-        <nav class="space-y-2">
+                <a href="/"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->is('/') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                    🏠 Dashboard
+                </a>
 
-            <a href="/" class="block px-4 py-3 rounded-xl transition
-                {{ request()->is('/') ? 'bg-white text-blue-700 font-semibold shadow' : 'hover:bg-white/15' }}">
-                Dashboard
-            </a>
+                <a href="/pasien"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->is('pasien*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                    👤 Data Pasien
+                </a>
 
-            <a href="/pasien" class="block px-4 py-3 rounded-xl transition
-                {{ request()->is('pasien*') ? 'bg-white text-blue-700 font-semibold shadow' : 'hover:bg-white/15' }}">
-                Data Pasien
-            </a>
+                <a href="/antrian"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->is('antrian*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                    🎫 Data Antrian
+                </a>
 
-            <a href="/antrian" class="block px-4 py-3 rounded-xl transition
-                {{ request()->is('antrian*') ? 'bg-white text-blue-700 font-semibold shadow' : 'hover:bg-white/15' }}">
-                Data Antrian
-            </a>
+                <a href="/jadwal-dokter"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->is('jadwal-dokter*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                    👨‍⚕️ Jadwal Dokter
+                </a>
 
-            <a href="/jadwal-dokter" class="block px-4 py-3 rounded-xl transition
-                {{ request()->is('jadwal-dokter*') ? 'bg-white text-blue-700 font-semibold shadow' : 'hover:bg-white/15' }}">
-                Jadwal Dokter
-            </a>
+                <a href="/pengaturan-klinik"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->is('pengaturan-klinik*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                    ⚙️ Pengaturan Klinik
+                </a>
 
-            <a href="/pengaturan-klinik" class="block px-4 py-3 rounded-xl transition
-                {{ request()->is('pengaturan-klinik*') ? 'bg-white text-blue-700 font-semibold shadow' : 'hover:bg-white/15' }}">
-                Pengaturan Klinik
-            </a>
+                <a href="/riwayat"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->is('riwayat*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                    📋 Riwayat Kunjungan
+                </a>
 
-            <a href="/riwayat" class="block px-4 py-3 rounded-xl transition
-                {{ request()->is('riwayat*') ? 'bg-white text-blue-700 font-semibold shadow' : 'hover:bg-white/15' }}">
-                Riwayat Kunjungan
-            </a>
+                <a href="/laporan-bulanan"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->is('laporan-bulanan*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                    📈 Laporan Bulanan
+                </a>
 
-            <a href="/laporan-bulanan" class="block px-4 py-3 rounded-xl transition
-                {{ request()->is('laporan-bulanan*') ? 'bg-white text-blue-700 font-semibold shadow' : 'hover:bg-white/15' }}">
-                Laporan Bulanan
-            </a>
+                <a href="/laporan"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->is('laporan') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                    📊 Laporan Harian
+                </a>
 
-            <a href="/laporan" class="block px-4 py-3 rounded-xl transition
-                {{ request()->is('laporan') ? 'bg-white text-blue-700 font-semibold shadow' : 'hover:bg-white/15' }}">
-                Laporan Harian
-            </a>
+            </nav>
 
-            <form action="/logout" method="POST" class="pt-4">
-                @csrf
-                <button type="submit" class="w-full text-left px-4 py-3 rounded-xl bg-red-400/90 hover:bg-red-500 transition">
-                    Logout
-                </button>
-            </form>
+            {{-- Footer --}}
+            <div class="p-4 border-t border-white/15">
 
-        </nav>
-    </aside>
+                <form action="/logout" method="POST">
+                    @csrf
 
-    <main class="flex-1 ml-72 p-8">
+                    <button
+                        class="w-full bg-red-500 hover:bg-red-600 py-3 rounded-xl font-semibold transition">
+                        Logout
+                    </button>
+
+                </form>
+
+            </div>
+
+        </aside>
+
+    <main class="flex-1 ml-72 p-8 min-h-screen">
         @yield('content')
     </main>
 
