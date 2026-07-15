@@ -14,11 +14,6 @@
                 Kelola status antrian pasien klinik.
             </p>
         </div>
-
-        <a href="/"
-           class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white px-5 py-3 rounded-2xl shadow transition">
-            Dashboard
-        </a>
     </div>
 </div>
 
@@ -27,6 +22,55 @@
         {{ session('success') }}
     </div>
 @endif
+
+<div class="bg-white rounded-3xl p-5 shadow-sm border border-sky-100 mb-6">
+    <form method="GET" action="/antrian" class="flex flex-wrap gap-3 items-center">
+
+        <input
+            type="text"
+            name="search"
+            value="{{ $search ?? '' }}"
+            placeholder="Cari nama, NRM, nomor antrian, keluhan..."
+            class="flex-1 min-w-[260px] border border-sky-100 bg-sky-50/60 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+        >
+
+        @if($status)
+            <input type="hidden" name="status" value="{{ $status }}">
+        @endif
+
+        <button class="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-2xl shadow transition">
+            Cari
+        </button>
+
+        <label class="flex items-center gap-4 bg-sky-50 border border-sky-100 px-5 py-3 rounded-2xl cursor-pointer hover:bg-sky-100 transition shadow-sm">
+
+            <div>
+                <p class="font-semibold text-slate-700 leading-tight">
+                    Prioritaskan berdasarkan AI
+                </p>
+                <p class="text-xs text-slate-500">
+                    Urutkan berdasarkan tingkat prioritas
+                </p>
+            </div>
+
+            <div class="relative">
+                <input
+                    type="checkbox"
+                    name="prioritas_ai"
+                    value="1"
+                    onchange="this.form.submit()"
+                    {{ $prioritasAI ? 'checked' : '' }}
+                    class="peer sr-only">
+
+                <div class="w-14 h-8 bg-slate-300 rounded-full peer-checked:bg-sky-500 transition"></div>
+
+                <div class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow transition peer-checked:translate-x-6"></div>
+            </div>
+
+        </label>
+
+    </form>
+</div>
 
 <div class="bg-white rounded-3xl p-5 shadow-sm border border-sky-100 mb-6">
     <p class="text-sm font-semibold text-slate-600 mb-3">Filter Status</p>
@@ -59,26 +103,6 @@
 </div>
 
 <div class="bg-white rounded-3xl p-5 shadow-sm border border-sky-100 mb-6">
-    <form method="GET" action="/antrian" class="flex gap-3">
-        <input
-            type="text"
-            name="search"
-            value="{{ $search ?? '' }}"
-            placeholder="Cari nama, NRM, nomor antrian, keluhan..."
-            class="w-full border border-sky-100 bg-sky-50/60 px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
-        >
-
-        @if($status)
-            <input type="hidden" name="status" value="{{ $status }}">
-        @endif
-
-        <button class="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-2xl shadow transition">
-            Cari
-        </button>
-    </form>
-</div>
-
-<div class="bg-white rounded-3xl p-5 shadow-sm border border-sky-100 mb-6">
     <p class="text-sm font-semibold text-slate-600 mb-3">Filter Jenis Pasien</p>
 
     <div class="flex flex-wrap gap-2">
@@ -108,6 +132,8 @@
                     <th class="p-4 text-left">Jenis Pasien</th>
                     <th class="p-4 text-left">Keluhan</th>
                     <th class="p-4 text-left">Status</th>
+                    <th class="p-4 text-left">Prioritas AI</th>
+                    <th class="p-4 text-left">Rekomendasi AI</th>
                     <th class="p-4 text-center">Aksi</th>
                 </tr>
             </thead>
@@ -176,55 +202,129 @@
                             <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">
                                 Batal
                             </span>
+                        @else
+                            <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-sm font-semibold">
+                                {{ ucfirst($item->status) }}
+                            </span>
                         @endif
                     </td>
 
                     <td class="p-4">
-                        <div class="flex flex-wrap gap-2 justify-center">
-                            <form action="/antrian/{{ $item->id }}/status" method="POST">
-                                @csrf
-                                <input type="hidden" name="status" value="dipanggil">
+                        @if($item->prioritas_ai == 'Tinggi')
+                            <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 font-semibold text-sm">
+                                🔴 Tinggi
+                            </span>
+                        @elseif($item->prioritas_ai == 'Sedang')
+                            <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-semibold text-sm">
+                                🟡 Sedang
+                            </span>
+                        @else
+                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold text-sm">
+                                🟢 Normal  
+                            </span>
+                        @endif
+                    </td>
 
-                                <button
-                                    type="submit"
-                                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
-                                    Panggil
-                                </button>
-                            </form>
+                    <td class="p-4 w-80">
 
-                            <form action="/antrian/{{ $item->id }}/status" method="POST">
-                                @csrf
-                                <input type="hidden" name="status" value="selesai">
+                        @php
+                            $warna = 'bg-green-50 border-green-200 text-green-800';
 
-                                <button
-                                    type="submit"
-                                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
-                                    Selesai
-                                </button>
-                            </form>
+                            if($item->prioritas_ai == 'Tinggi'){
+                                $warna = 'bg-red-50 border-red-200 text-red-800';
+                            }elseif($item->prioritas_ai == 'Sedang'){
+                                $warna = 'bg-yellow-50 border-yellow-200 text-yellow-800';
+                            }
+                        @endphp
 
-                            <a href="/antrian/{{ $item->id }}/rujuk"
-                               class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
-                                Rujuk
-                            </a>
+                        @if(!empty($item->rekomendasi_ai))
 
-                            <form action="/antrian/{{ $item->id }}/status" method="POST">
-                                @csrf
-                                <input type="hidden" name="status" value="batal">
+                            <div class="{{ $warna }} border rounded-2xl p-4 shadow-sm">
 
-                                <button
-                                    type="submit"
-                                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
-                                    onclick="return confirm('Yakin ingin membatalkan antrian ini?')">
-                                    Batal
-                                </button>
-                            </form>
-                        </div>
+                                <p class="font-semibold mb-2">
+                                    Rekomendasi AI
+                                </p>
+
+                                <p class="text-sm leading-7 text-justify">
+                                    {{ $item->rekomendasi_ai }}
+                                </p>
+
+                            </div>
+
+                        @else
+
+                            <span class="text-slate-400 italic">
+                                Tidak ada rekomendasi
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                    <td class="p-4">
+                        @if(in_array($item->status, ['selesai', 'dirujuk', 'batal']))
+
+                            <div class="flex justify-center">
+                                <span class="bg-slate-100 text-slate-500 px-4 py-2 rounded-xl text-sm font-semibold">
+                                    Tidak dapat diubah
+                                </span>
+                            </div>
+
+                        @else
+
+                            <div class="flex flex-wrap gap-2 justify-center">
+
+                                @if($item->status == 'menunggu')
+                                    <form action="/antrian/{{ $item->id }}/status" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="status" value="dipanggil">
+
+                                        <button
+                                            type="submit"
+                                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
+                                            Panggil
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if($item->status == 'dipanggil')
+                                    <form action="/antrian/{{ $item->id }}/status" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="status" value="selesai">
+
+                                        <button
+                                            type="submit"
+                                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
+                                            Selesai
+                                        </button>
+                                    </form>
+
+                                    <a href="/antrian/{{ $item->id }}/rujuk"
+                                       class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">
+                                        Rujuk
+                                    </a>
+                                @endif
+
+                                <form action="/antrian/{{ $item->id }}/status" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="status" value="batal">
+
+                                    <button
+                                        type="submit"
+                                        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition"
+                                        onclick="return confirm('Yakin ingin membatalkan antrian ini?')">
+                                        Batal
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        @endif
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="text-center p-8 text-slate-500">
+                    <td colspan="10" class="text-center p-8 text-slate-500">
                         Belum ada data antrian
                     </td>
                 </tr>

@@ -12,8 +12,10 @@ class AntrianController extends Controller
         $status = request('status');
         $search = request('search');
         $jenis = request('jenis');
+        $prioritasAI = request('prioritas_ai');
 
         $antrian = Pendaftaran::with('pasien')
+            ->whereDate('tanggal', now()->toDateString())
             ->when($status, function ($query) use ($status) {
                 return $query->where('status', $status);
             })
@@ -30,12 +32,26 @@ class AntrianController extends Controller
             ->when($jenis, function ($query) use ($jenis) {
                 return $query->where('jenis_pasien', $jenis);
             })
-
-            ->orderBy('tanggal', 'desc')
-            ->orderBy('id', 'desc')
+            ->when($prioritasAI, function ($query) {
+                return $query
+                    ->orderByRaw("
+                        CASE
+                            WHEN prioritas_ai = 'Tinggi' THEN 1
+                            WHEN prioritas_ai = 'Sedang' THEN 2
+                            WHEN prioritas_ai = 'Normal' THEN 3
+                            ELSE 4
+                        END
+                    ")
+                    ->orderBy('nomor_antrian', 'asc');
+            })
+            ->when(!$prioritasAI, function ($query) {
+                return $query
+                    ->orderBy('tanggal', 'desc')
+                    ->orderBy('nomor_antrian', 'asc');
+            })
             ->get();
 
-        return view('antrian.index', compact('antrian', 'status', 'search', 'jenis'));
+        return view('antrian.index', compact('antrian', 'status', 'search', 'jenis','prioritasAI'));
     }
 
     public function updateStatus($id)
