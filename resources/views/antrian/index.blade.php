@@ -73,6 +73,49 @@
 </div>
 
 <div class="bg-white rounded-3xl p-5 shadow-sm border border-sky-100 mb-6">
+
+    <form method="GET" action="/antrian" class="flex items-center gap-4">
+
+        <label class="font-semibold text-slate-700">
+            Tampilkan Antrian :
+        </label>
+
+        <select
+            name="tanggal"
+            onchange="this.form.submit()"
+            class="border rounded-xl px-4 py-2">
+
+            @for($i = 0; $i <= 6; $i++)
+
+                @php
+                    $tgl = now()->addDays($i);
+                @endphp
+
+                <option
+                    value="{{ $tgl->toDateString() }}"
+                    {{ $tanggal == $tgl->toDateString() ? 'selected' : '' }}>
+
+                    @if($i==0)
+                        Hari Ini
+                    @elseif($i==1)
+                        Besok
+                    @else
+                        {{ $tgl->translatedFormat('l') }}
+                    @endif
+
+                    ({{ $tgl->format('d-m-Y') }})
+
+                </option>
+
+            @endfor
+
+        </select>
+
+    </form>
+
+</div>
+
+<div class="bg-white rounded-3xl p-5 shadow-sm border border-sky-100 mb-6">
     <p class="text-sm font-semibold text-slate-600 mb-3">Filter Status</p>
 
     <div class="flex flex-wrap gap-2">

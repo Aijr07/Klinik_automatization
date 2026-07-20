@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\Http;
 class AntrianController extends Controller
 {
     public function index()
-    {
-        $status = request('status');
-        $search = request('search');
-        $jenis = request('jenis');
-        $prioritasAI = request('prioritas_ai');
+{
+    $tanggal = request('tanggal', now()->toDateString());
+
+    $status = request('status');
+    $search = request('search');
+    $jenis = request('jenis');
+    $prioritasAI = request('prioritas_ai');
 
         $antrian = Pendaftaran::with('pasien')
-            ->whereDate('tanggal', now()->toDateString())
+            ->whereDate('tanggal', $tanggal)
             ->when($status, function ($query) use ($status) {
                 return $query->where('status', $status);
             })
@@ -51,7 +53,7 @@ class AntrianController extends Controller
             })
             ->get();
 
-        return view('antrian.index', compact('antrian', 'status', 'search', 'jenis','prioritasAI'));
+        return view('antrian.index', compact('antrian', 'status', 'search', 'jenis','prioritasAI', 'tanggal'));
     }
 
     public function updateStatus($id)
