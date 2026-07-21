@@ -70,9 +70,21 @@
                 <span class="sidebar-text">Data Antrian</span>
             </a>
 
-            <a href="/jadwal-dokter"
+            <a href="/dokter"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl transition
-                {{ request()->is('jadwal-dokter*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+                {{ request()->is('dokter*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
+
+                <span class="text-xl">🩺</span>
+
+                <span class="sidebar-text">
+                    Master Dokter
+                </span>
+
+            </a>
+
+            <a href="/jadwal"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                {{ request()->is('jadwal*') ? 'bg-white text-blue-700 shadow font-semibold' : 'hover:bg-white/15' }}">
                 <span class="text-xl">👨‍⚕️</span>
                 <span class="sidebar-text">Jadwal Dokter</span>
             </a>

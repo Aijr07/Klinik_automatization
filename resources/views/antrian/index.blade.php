@@ -85,19 +85,19 @@
             onchange="this.form.submit()"
             class="border rounded-xl px-4 py-2">
 
-            @for($i = 0; $i <= 6; $i++)
+            @foreach($tanggalList as $jadwal)
 
                 @php
-                    $tgl = now()->addDays($i);
+                    $tgl = \Carbon\Carbon::parse($jadwal->tanggal);
                 @endphp
 
                 <option
-                    value="{{ $tgl->toDateString() }}"
-                    {{ $tanggal == $tgl->toDateString() ? 'selected' : '' }}>
+                    value="{{ $jadwal->tanggal }}"
+                    {{ $tanggal == $jadwal->tanggal ? 'selected' : '' }}>
 
-                    @if($i==0)
+                    @if($tgl->isToday())
                         Hari Ini
-                    @elseif($i==1)
+                    @elseif($tgl->isTomorrow())
                         Besok
                     @else
                         {{ $tgl->translatedFormat('l') }}
@@ -107,7 +107,7 @@
 
                 </option>
 
-            @endfor
+            @endforeach
 
         </select>
 

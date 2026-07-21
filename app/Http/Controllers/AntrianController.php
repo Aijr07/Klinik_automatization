@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pendaftaran;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class AntrianController extends Controller
 {
@@ -15,6 +16,12 @@ class AntrianController extends Controller
     $search = request('search');
     $jenis = request('jenis');
     $prioritasAI = request('prioritas_ai');
+
+    $tanggalList = DB::table('jadwal_pendaftaran')
+        ->where('status_pendaftaran', 'buka')
+        ->whereDate('tanggal', '>=', today())
+        ->orderBy('tanggal')
+        ->get();
 
         $antrian = Pendaftaran::with('pasien')
             ->whereDate('tanggal', $tanggal)
@@ -53,7 +60,7 @@ class AntrianController extends Controller
             })
             ->get();
 
-        return view('antrian.index', compact('antrian', 'status', 'search', 'jenis','prioritasAI', 'tanggal'));
+        return view('antrian.index', compact('antrian', 'status', 'search', 'jenis','prioritasAI', 'tanggal','tanggalList'));
     }
 
     public function updateStatus($id)
