@@ -11,15 +11,19 @@ class Pendaftaran extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'pasien_id',
-        'nomor_antrian',
-        'keluhan',
-        'tanggal',
-        'status',
-        'jenis_pasien',
-        'tujuan_rujukan',
-        'alasan_rujukan',
-    ];
+    'pasien_id',
+    'dokter_id',
+    'nomor_antrian',
+    'tanggal_daftar',
+    'tanggal_kunjungan',
+    'keluhan',
+    'prioritas_ai',
+    'rekomendasi_ai',
+    'status',
+    'jenis_pasien',
+    'tujuan_rujukan',
+    'alasan_rujukan',
+];
 
     public function pasien()
     {

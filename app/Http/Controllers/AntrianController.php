@@ -24,41 +24,47 @@ class AntrianController extends Controller
         ->get();
 
         $antrian = Pendaftaran::with('pasien')
-            ->whereDate('tanggal', $tanggal)
-            ->when($status, function ($query) use ($status) {
-                return $query->where('status', $status);
-            })
-            ->when($search, function ($query) use ($search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('nomor_antrian', 'like', '%' . $search . '%')
-                    ->orWhere('keluhan', 'like', '%' . $search . '%')
-                    ->orWhereHas('pasien', function ($pasien) use ($search) {
-                        $pasien->where('nama', 'like', '%' . $search . '%')
-                                ->orWhere('nrm', 'like', '%' . $search . '%');
-                    });
-                });
-            })
-            ->when($jenis, function ($query) use ($jenis) {
-                return $query->where('jenis_pasien', $jenis);
-            })
-            ->when($prioritasAI, function ($query) {
-                return $query
-                    ->orderByRaw("
-                        CASE
-                            WHEN prioritas_ai = 'Tinggi' THEN 1
-                            WHEN prioritas_ai = 'Sedang' THEN 2
-                            WHEN prioritas_ai = 'Normal' THEN 3
-                            ELSE 4
-                        END
-                    ")
-                    ->orderBy('nomor_antrian', 'asc');
-            })
-            ->when(!$prioritasAI, function ($query) {
-                return $query
-                    ->orderBy('tanggal', 'desc')
-                    ->orderBy('nomor_antrian', 'asc');
-            })
-            ->get();
+    ->whereDate('tanggal_kunjungan', $tanggal)
+
+    ->when($status, function ($query) use ($status) {
+        return $query->where('status', $status);
+    })
+
+    ->when($search, function ($query) use ($search) {
+        return $query->where(function ($q) use ($search) {
+            $q->where('nomor_antrian', 'like', "%{$search}%")
+              ->orWhere('keluhan', 'like', "%{$search}%")
+              ->orWhereHas('pasien', function ($pasien) use ($search) {
+                    $pasien->where('nama', 'like', "%{$search}%")
+                           ->orWhere('nrm', 'like', "%{$search}%");
+              });
+        });
+    })
+
+    ->when($jenis, function ($query) use ($jenis) {
+        return $query->where('jenis_pasien', $jenis);
+    })
+
+    ->when($prioritasAI, function ($query) {
+        return $query
+            ->orderByRaw("
+                CASE
+                    WHEN prioritas_ai='Tinggi' THEN 1
+                    WHEN prioritas_ai='Sedang' THEN 2
+                    WHEN prioritas_ai='Normal' THEN 3
+                    ELSE 4
+                END
+            ")
+            ->orderBy('nomor_antrian');
+    })
+
+    ->when(!$prioritasAI, function ($query) {
+        return $query
+            ->orderBy('tanggal_kunjungan','desc')
+            ->orderBy('nomor_antrian');
+    })
+
+    ->get();
 
         return view('antrian.index', compact('antrian', 'status', 'search', 'jenis','prioritasAI', 'tanggal','tanggalList'));
     }

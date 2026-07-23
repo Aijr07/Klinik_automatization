@@ -1,81 +1,78 @@
-<?php
-
-namespace App\Console\Commands;
-
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-
-class GenerateJadwalPendaftaran extends Command
+public function handle()
 {
-    /**
-     * Nama command
-     */
-    protected $signature = 'jadwal:generate';
+    $this->info('Generate Jadwal Pendaftaran...');
 
-    /**
-     * Deskripsi command
-     */
-    protected $description = 'Generate jadwal pendaftaran berdasarkan jadwal dokter';
+    $jadwalDokter = DB::table('jadwal_dokter')->get();
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
-    {
-        $this->info('Generate Jadwal Pendaftaran...');
+    $hariIni = Carbon::today('Asia/Makassar');
 
-        $jadwalDokter = DB::table('jadwal_dokter')
-            ->pluck('hari')
-            ->unique()
-            ->toArray();
+    for ($i = 0; $i <= 6; $i++) {
 
-        $hariIni = Carbon::today('Asia/Makassar');
+        $tanggal = $hariIni->copy()->addDays($i);
 
-        for ($i = 0; $i <= 6; $i++) {
+        $hari = strtolower(
+            $tanggal
+                ->locale('id')
+                ->translatedFormat('l')
+        );
 
-            $tanggal = $hariIni->copy()->addDays($i);
+        // Ambil SEMUA dokter yang praktik pada hari tersebut
+        $jadwalHariIni = $jadwalDokter->filter(function ($item) use ($hari) {
+            return strtolower($item->hari) == $hari;
+        });
 
-            $hari = $tanggal
-                        ->locale('id')
-                        ->translatedFormat('l');
-
-            $status = in_array($hari, $jadwalDokter)
-                        ? 'buka'
-                        : 'tutup';
+        // Jika tidak ada dokter
+        if ($jadwalHariIni->isEmpty()) {
 
             DB::table('jadwal_pendaftaran')->updateOrInsert(
 
                 [
-                    'tanggal' => $tanggal->toDateString()
+                    'tanggal' => $tanggal->toDateString(),
+                    'jadwal_dokter_id' => null
                 ],
 
                 [
-                    'status_pendaftaran' => $status,
+                    'status_pendaftaran' => 'tutup',
                     'updated_at' => now(),
                     'created_at' => now(),
                 ]
 
             );
 
-            $this->line(
+            continue;
+        }
 
-                $tanggal->toDateString()
+        // Simpan SATU BARIS UNTUK SETIAP DOKTER
+        foreach ($jadwalHariIni as $jadwal) {
 
-                ." | "
+            DB::table('jadwal_pendaftaran')->updateOrInsert(
 
-                .$hari
+                [
+                    'tanggal' => $tanggal->toDateString(),
+                    'jadwal_dokter_id' => $jadwal->id
+                ],
 
-                ." | "
-
-                .$status
+                [
+                    'status_pendaftaran' => 'buka',
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]
 
             );
 
         }
 
-        $this->info('Selesai.');
-
-        return Command::SUCCESS;
+        $this->line(
+            $tanggal->toDateString()
+            ." | "
+            .$hari
+            ." | "
+            .$jadwalHariIni->count()
+            ." dokter"
+        );
     }
+
+    $this->info('Selesai.');
+
+    return Command::SUCCESS;
 }
